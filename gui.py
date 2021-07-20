@@ -9,9 +9,13 @@ gray_medium = '#4F4F51'
 gray_light = '#9D9FA2'
 
 root = Tk()
-root.geometry('630x540')
+root.geometry('630x560')
 root.title('proportion tool for Debra')
 root.configure(bg = gray)
+root.columnconfigure(0, weight = 1)
+root.rowconfigure(0, weight = 1)
+root.eval('tk::PlaceWindow . center')
+#root.resizable(0,0)
 
 #title_image = PhotoImage(file = 'resources/images/title_image.gif')
 
@@ -29,6 +33,8 @@ title_label = Label(
 
 title_label.grid(row = 0, column = 0)
 
+advanced_button = Button(sub_window, text = 'Advanced', bg = gray_medium, fg = orange, width = 10, relief = 'ridge', font = ('Ariel', 10), bd = 1, overrelief = 'sunken')
+#advanced_button.grid(row = 0, column = 0, padx = 5, pady = 5, sticky = 'ne')
 
 class Field:
     def __init__(self):
@@ -40,12 +46,14 @@ class Field:
         self.radio_var = IntVar()
         self.radio_var.set(1)
 
-        self.radio1 = Radiobutton(self.frame, text = 'inches', variable = self.radio_var, value = 1, width = 5, font = ('Ariel', 15))
+        self.radio1 = Radiobutton(self.frame, text = 'inches', variable = self.radio_var, value = 1, width = 5, font = ('Ariel', 15), indicatoron = 0, relief = 'groove', bd = 1, selectcolor = gray_medium, overrelief = 'sunken')
         self.radio1.configure(bg = gray_medium, fg = orange)
         #self.radio1.select()
 
-        self.radio2 = Radiobutton(self.frame, text = 'feet', variable = self.radio_var, value = 2, width = 5, font = ('Ariel', 15))
+        self.radio2 = Radiobutton(self.frame, text = 'feet', variable = self.radio_var, value = 2, width = 5, font = ('Ariel', 15), indicatoron = 0, relief = 'groove', bd = 1, selectcolor = gray_medium, overrelief = 'sunken')
         self.radio2.configure(bg = gray_medium, fg = orange)
+
+        self.clear_btn = Button(self.frame, text = 'Clear', bg = gray, fg = orange, width = 5, relief = 'ridge', font = ('Ariel', 10), bd = 1, overrelief = 'sunken')
 
 
 
@@ -55,7 +63,8 @@ class Field:
         self.label.grid(row = 0, column = 0, padx = 10, pady = 5)
         self.entry.grid(row = 0, column = 1, padx = 10, pady = 5)
         self.radio1.grid(row = 0, column = 2 )
-        self.radio2.grid(row = 0, column = 3 )   
+        self.radio2.grid(row = 0, column = 3 )
+        self.clear_btn.grid(row = 0, column = 4, padx = 35,sticky = 'e')   
 
 
 def create_fields():
@@ -73,17 +82,37 @@ def create_fields():
 
     return fields
 
-
-
+def copy_to_clipboard(text):
+    root.clipboard_clear()
+    root.clipboard_append(f'Height:{text} \nWidth:{text} \nSquare Footage:{text}')
+    root.update()
 
 fields = create_fields()
-cal_button = Button(sub_window, text = '• CALCULATE •', bg = gray_medium, fg = orange, width = 30, relief = 'flat', font = ('Ariel', 15))
-cal_button.grid(row = 6, column = 0, pady = 10)
-return_lbl = Label(sub_window, bg = gray_medium, fg = orange, width = 50, height = 3, font = ('Ariel', 15))
-return_lbl.grid(row = 7, column = 0, pady = 5 )
 
-return_lbl.configure(text = 'Height:\nWidth:\nSquare Footage:', justify = 'left', anchor = 'w')
+cal_btn_frame = Frame(sub_window, bg = gray, width = 600)
+cal_btn_frame.grid(row = 6, column = 0, pady = 5, padx = 5)
 
+cal_button = Button(cal_btn_frame, text = 'CALCULATE', bg = gray_medium, fg = orange, width = 23, relief = 'ridge', font = ('Ariel', 15), bd = 1,overrelief = 'sunken')
+cal_button.grid(row = 0, column = 0, pady = 10, padx = 13)
+
+cal_radio_var = IntVar()
+cal_radio_var.set(1)
+
+cal_radio_inches = Radiobutton(cal_btn_frame, text = 'inches', variable = cal_radio_var, value = 1, width = 5, font = ('Ariel', 15), indicatoron = 0, relief = 'groove', bd = 1, selectcolor = gray_medium, overrelief = 'sunken', bg = gray_medium, fg = orange)
+cal_radio_inches.grid(row = 0, column = 1, padx = 0, pady = 5)
+
+cal_radio_feet = Radiobutton(cal_btn_frame, text = 'feet', variable = cal_radio_var, value = 2, width = 5, font = ('Ariel', 15), indicatoron = 0, relief = 'groove', bd = 1, selectcolor = gray_medium, overrelief = 'sunken', bg = gray_medium, fg = orange)
+cal_radio_feet.grid(row = 0, column = 2, padx = 0, pady = 5)
+
+return_frame = Frame(sub_window, bg = gray_medium, width = 600)
+return_frame.grid(row = 7, column = 0, pady = 5, padx = 5)
+
+return_label = Label(return_frame, bg = gray_medium, relief = 'flat', fg = orange, width = 50, height = 3, font = ('Ariel', 15))
+return_label.grid(row = 0, column = 0, pady = 5 )
+return_label.configure(justify = 'right', anchor = 'w', text = ' Height: \n Width: \n Square Footage: ' )
+
+copy_button = Button(return_frame, text = 'Copy', bg = gray_medium, fg = orange, width = 10, relief = 'ridge', font = ('Ariel', 10), bd = 1, command = lambda : copy_to_clipboard('text'), overrelief = 'sunken')
+copy_button.grid(row = 0, column = 0, padx = 5, pady = 5, sticky = 'ne')
 
 
 root.mainloop()
