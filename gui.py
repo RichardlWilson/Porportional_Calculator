@@ -50,7 +50,7 @@ class Field:
         validation = self.frame.register(is_digit)
         self.entry = Entry(self.frame, bg = gray_light, fg = 'white',
             width = 10, relief = 'flat', font = ('Ariel', 15), validate = 'key',
-            validatecommand = (validation, '%S'))
+            validatecommand = (validation, '%P'))
         
         self.radio_var = IntVar()
         self.radio_var.set(1)
@@ -85,11 +85,9 @@ class Field:
         self.clear_btn.grid(row = 0, column = 4, padx = 35,sticky = 'e')
 
     def clear_entry(self):
-        print(self.entry.get())
-        self.entry.delete(0, END)
+        self.entry.delete(0, END)    
         
                
-
 
 def create_fields():
     fields = [Field() for num in range(5)]
@@ -113,7 +111,17 @@ def copy_to_clipboard(text):
     root.update()
 
 def is_digit(text):
-    return text.isdigit() or text == '.'
+    if text =='':
+        return True
+    try:
+        float(text)
+        return True
+    except:
+        return False
+
+    #return True
+
+    #return text.isdigit() or text == '.'
 
 def clear_all():
     for field in fields:
