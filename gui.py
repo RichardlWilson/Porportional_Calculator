@@ -1,6 +1,7 @@
 #GUI 
 
 from tkinter import *
+import calculations
 
 #colors_used
 orange = '#FA9605'
@@ -21,15 +22,8 @@ sub_window = Frame(root, bg = gray, width = 610,height = 600, relief = 'solid',
     bd = 1)
 sub_window.grid(row = 0, column = 0, padx = 10, pady = 10)
 
-title_label = Label(
-    sub_window,
-    #image = title_image,
-    text = 'Proportion Tool', font = ('Times', 40),
-    bg = gray,
-    fg = orange,
-    padx = 5,
-    pady = 4
-    )
+title_label = Label(sub_window, text = 'Proportion Tool', font = ('Times', 40),
+    bg = gray, fg = orange, padx = 5, pady = 4)
 
 title_label.grid(row = 0, column = 0)
 
@@ -85,7 +79,7 @@ class Field:
         self.clear_btn.grid(row = 0, column = 4, padx = 35,sticky = 'e')
 
     def clear_entry(self):
-        self.entry.delete(0, END)    
+        self.entry.delete(0, END)     
         
                
 
@@ -107,8 +101,9 @@ def create_fields():
 
 def copy_to_clipboard(text):
     root.clipboard_clear()
-    root.clipboard_append(f'Height:{text} \nWidth:{text} \nSquare Footage:{text}')
+    root.clipboard_append(updated_calculation[0])
     root.update()
+
 
 def is_digit(text):
     if text =='':
@@ -119,14 +114,22 @@ def is_digit(text):
     except:
         return False
 
-    #return True
-
-    #return text.isdigit() or text == '.'
 
 def clear_all():
     for field in fields:
-        field.entry.delete(0, END)    
+        field.entry.delete(0, END)
 
+
+def calculate():
+    info = []
+    for field in fields:
+        info.append(float(field.entry.get()))
+
+    updated_calculation[0] = calculations.calculation(tuple(info))
+    return_label.configure(text = updated_calculation[0])
+
+
+updated_calculation = ['']
 
 fields = create_fields()
 
@@ -136,7 +139,7 @@ cal_btn_frame.grid(row = 6, column = 0, pady = 5, padx = 5)
 
 cal_button = Button(cal_btn_frame, text = 'CALCULATE', bg = gray_medium,
     fg = orange, width = 23, relief = 'ridge', font = ('Ariel', 15), bd = 1,
-    overrelief = 'sunken')
+    overrelief = 'sunken', command = calculate)
 
 cal_button.grid(row = 0, column = 0, pady = 10, padx = 13)
 
