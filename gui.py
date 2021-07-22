@@ -47,26 +47,27 @@ class Field:
             validatecommand = (validation, '%P'))
         
         self.radio_var = IntVar()
-        self.radio_var.set(1)
+        self.radio_var.set(0)
 
         self.radio1 = Radiobutton(self.frame, text = 'inches',
-            variable = self.radio_var, value = 1, width = 5,
+            variable = self.radio_var, value = 0, width = 5,
             font = ('Ariel', 15), indicatoron = 0, relief = 'groove', bd = 1,
-            selectcolor = gray_medium, overrelief = 'sunken')
+            selectcolor = gray_medium, overrelief = 'sunken', takefocus = 0)
 
         self.radio1.configure(bg = gray_medium, fg = orange)
         #self.radio1.select()
 
         self.radio2 = Radiobutton(self.frame, text = 'feet',
-            variable = self.radio_var, value = 2, width = 5,
+            variable = self.radio_var, value = 1, width = 5,
             font = ('Ariel', 15), indicatoron = 0, relief = 'groove', bd = 1,
-            selectcolor = gray_medium, overrelief = 'sunken')
+            selectcolor = gray_medium, overrelief = 'sunken', takefocus = 0)
 
         self.radio2.configure(bg = gray_medium, fg = orange)
 
         self.clear_btn = Button(self.frame, text = 'Clear', bg = gray,
             fg = orange, width = 5, relief = 'ridge', font = ('Ariel', 10),
-            bd = 1, overrelief = 'sunken', command = self.clear_entry)
+            bd = 1, overrelief = 'sunken', command = self.clear_entry,
+            takefocus = 0)
 
     def show(self, num = 1):
         self.frame.grid(row = num, column = 0, padx = 5, pady = 10)
@@ -105,6 +106,17 @@ def copy_to_clipboard(text):
     root.update()
 
 
+def tab_order():
+    entry_fields = [fields[0].entry, fields[1].entry, fields[2].entry,
+        fields[3].entry, fields[4].entry] 
+
+    entry_fields[0].focus()
+    print(entry_fields)
+
+    # for field in entry_fields:
+    #     field.lift()        
+
+
 def is_digit(text):
     if text =='':
         return True
@@ -120,12 +132,14 @@ def clear_all():
         field.entry.delete(0, END)
 
 
-def calculate():
+def calculate(key_event = None):
     info = []
     for field in fields:
-        info.append(float(field.entry.get()))
+        info.append([field.entry.get(),field.radio_var.get()])
 
-    updated_calculation[0] = calculations.calculation(tuple(info))
+    print(info)    
+
+    updated_calculation[0] = calculations.calculation(info)
     return_label.configure(text = updated_calculation[0])
 
 
@@ -139,7 +153,7 @@ cal_btn_frame.grid(row = 6, column = 0, pady = 5, padx = 5)
 
 cal_button = Button(cal_btn_frame, text = 'CALCULATE', bg = gray_medium,
     fg = orange, width = 23, relief = 'ridge', font = ('Ariel', 15), bd = 1,
-    overrelief = 'sunken', command = calculate)
+    overrelief = 'sunken', command = calculate, takefocus = 0)
 
 cal_button.grid(row = 0, column = 0, pady = 10, padx = 13)
 
@@ -150,20 +164,20 @@ cal_radio_var.set(1)
 cal_radio_inches = Radiobutton(cal_btn_frame, text = 'inches',
     variable = cal_radio_var, value = 1, width = 5, font = ('Ariel', 15),
     indicatoron = 0, relief = 'groove', bd = 1, selectcolor = gray_medium,
-    overrelief = 'sunken', bg = gray_medium, fg = orange)
+    overrelief = 'sunken', bg = gray_medium, fg = orange, takefocus = 0)
 
 cal_radio_inches.grid(row = 0, column = 1, padx = 0, pady = 5)
 
 cal_radio_feet = Radiobutton(cal_btn_frame, text = 'feet',
     variable = cal_radio_var, value = 2, width = 5, font = ('Ariel', 15),
     indicatoron = 0, relief = 'groove', bd = 1, selectcolor = gray_medium,
-    overrelief = 'sunken', bg = gray_medium, fg = orange)
+    overrelief = 'sunken', bg = gray_medium, fg = orange, takefocus = 0)
 
 cal_radio_feet.grid(row = 0, column = 2, padx = 0, pady = 5)
 
 clear_all_btn = Button(cal_btn_frame, text = 'Clear All', bg = gray,
     fg = orange, width = 8, relief = 'ridge', font = ('Ariel', 10),
-    bd = 1, overrelief = 'sunken', command = clear_all)
+    bd = 1, overrelief = 'sunken', command = clear_all, takefocus = 0)
 
 clear_all_btn.grid(row = 0, column = 3, padx = 20, sticky = 'e')
 
@@ -176,14 +190,17 @@ return_label = Label(return_frame, bg = gray_medium, relief = 'flat',
 
 return_label.grid(row = 0, column = 0, pady = 5 )
 
-return_label.configure(justify = 'right', anchor = 'w',
-    text = ' Height: \n Width: \n Square Footage: ' )
+return_label.configure(justify = 'left', anchor = 'w',
+    text = '               Height: \n                Width: \n Square Footage: ' )
 
 copy_button = Button(return_frame, text = 'Copy', bg = gray_medium,
     fg = orange, width = 10, relief = 'ridge', font = ('Ariel', 10), bd = 1,
-    command = lambda : copy_to_clipboard('text'), overrelief = 'sunken')
+    command = lambda : copy_to_clipboard('text'), overrelief = 'sunken',
+    takefocus = 0)
 
 copy_button.grid(row = 0, column = 0, padx = 5, pady = 5, sticky = 'ne')
 
+root.bind('<Return>', calculate )
 
+tab_order()
 root.mainloop()
