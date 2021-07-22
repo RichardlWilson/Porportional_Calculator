@@ -139,17 +139,18 @@ def is_digit(text):
 def clear_all():
     for field in fields:
         field.entry.delete(0, END)
+        return_label['text'] = '0\n0\n0'
 
 
 def calculate(key_event = None):
     info = []
     for field in fields:
-        info.append([field.entry.get(),field.radio_var.get()])
-
-    print(info)    
+        info.append([field.entry.get(),field.radio_var.get()])    
 
     updated_calculation[0] = calculations.calculation(info)
-    return_label.configure(text = updated_calculation[0])
+
+    print(info)
+    return_label['text'] = updated_calculation[0]
 
 
 updated_calculation = ['']
@@ -172,19 +173,19 @@ cal_radio_var = IntVar()
 
 cal_radio_var.set(1)
 
-cal_radio_inches = Radiobutton(cal_btn_frame, text = 'inches',
-    variable = cal_radio_var, value = 1, width = 5, font = ('Ariel', 15),
-    indicatoron = 0, relief = 'groove', bd = 1, selectcolor = gray_medium,
-    overrelief = 'sunken', bg = gray_medium, fg = orange, takefocus = 0)
+# cal_radio_inches = Radiobutton(cal_btn_frame, text = 'inches',
+#     variable = cal_radio_var, value = 1, width = 5, font = ('Ariel', 15),
+#     indicatoron = 0, relief = 'groove', bd = 1, selectcolor = gray_medium,
+#     overrelief = 'sunken', bg = gray_medium, fg = orange, takefocus = 0)
 
-cal_radio_inches.grid(row = 0, column = 1, padx = 0, pady = 5)
+# cal_radio_inches.grid(row = 0, column = 1, padx = 0, pady = 5)
 
-cal_radio_feet = Radiobutton(cal_btn_frame, text = 'feet',
-    variable = cal_radio_var, value = 2, width = 5, font = ('Ariel', 15),
-    indicatoron = 0, relief = 'groove', bd = 1, selectcolor = gray_medium,
-    overrelief = 'sunken', bg = gray_medium, fg = orange, takefocus = 0)
+# cal_radio_feet = Radiobutton(cal_btn_frame, text = 'feet',
+#     variable = cal_radio_var, value = 2, width = 5, font = ('Ariel', 15),
+#     indicatoron = 0, relief = 'groove', bd = 1, selectcolor = gray_medium,
+#     overrelief = 'sunken', bg = gray_medium, fg = orange, takefocus = 0)
 
-cal_radio_feet.grid(row = 0, column = 2, padx = 0, pady = 5)
+# cal_radio_feet.grid(row = 0, column = 2, padx = 0, pady = 5)
 
 
 clear_all_btn = Button(cal_btn_frame, text = 'Clear All', bg = gray,

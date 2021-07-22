@@ -1,54 +1,99 @@
 
     
 
-def calculation(info):
+def calculation(str_info):
     '''
     Calculates the max height and max width from a pre determined measurment and 
     a maximum square footage.
 
     info is expected to be a list of list ex: [ [ value ] , [True or False]]
     '''
+    print(str_info)
 
-    print(info)
+    def convert_to_inches(info):
+        '''
+        Converts all passed arguments to inches.
+        '''
+        converted_info = []
 
-    current_height = float(info[0][0])
-    current_height_feet = info[0][1]
+        for x in info[:4]:
+            if x[0] =='':
+                converted_info.append(0)
+            elif x[1]:
+                converted_info.append(float(x[0])*12)
+            else:
+                converted_info.append(float(x[0]))
 
-    current_width = float(info[1][0])
-    current_width_feet = info[1][1]
+        if info[4][0]=='':
+            converted_info.append(100**100)
+        else:
+            converted_info.append(float(info[4][0]) *12)
 
-    max_height = float(info[2][0])
-    max_height_feet = info[2][1]
+        print(f'converted info {converted_info}')               
 
-    max_width = float(info[3][0])
-    max_width_feet = info[3][1]
+        return converted_info
 
-    max_sqft = float(info[4][0])
-    max_sqft_feet = info[4][1]
 
-    
-    if max_height == 0:
-        max_height = 100**100
+    def percentage(current_height, current_width):
+        '''
+        check ratio between current_height & current_width.
+        '''
+        if current_height > current_width:
+            width_percentage = current_width / current_height
+            height_percentage = 1
+        else:    
+            height_percentage = current_height / current_width
+            width_percentage = 1
 
-    if max_width == 0:
-        max_width= 100**100
+        print(f'Height Precentage: {height_percentage} / Width Percentage: {width_percentage}')
 
-    if current_height > current_width:
-        width_percentage = current_width / current_height
-        height_percentage = 1
+        return height_percentage, width_percentage 
+
+
+    def cal_h_w_sqft(current_height, current_width,height_percentage,
+        width_percentage, max_height, max_width, max_sqft):
+        '''
+        Calculate largest height and width until an argument returns True.
+        '''
+        print(f'max_height:{max_height} / current_height: {current_height} / max_sqft: {max_sqft}')
+
+        width = current_width
+        height = current_height 
+
+        while  (((width + width_percentage) * (height + height_percentage) / 144) <= max_sqft \
+            and (height <= max_height) and (width <= max_width)):
+
+            print('Check point')
+
+            width += width_percentage
+            height += height_percentage
+        
+        safe_sqft = width * height / 144
+
+        return f'{round(height, 2)}" | {round(height / 12, 2)}\'\n' \
+            + f'{round(width, 2)}" | {round(width / 12, 2)}\'\n{round(safe_sqft, 2)}\''      
+
+
+    info = (convert_to_inches(str_info))  
+
+    current_height, current_width, max_height, max_width, max_sqft = info
+
+    if current_width == 0 or current_height ==0:
+        return 'Error:\nCurrent Height Empty or\nCurrent Width Empty'
+
     else:    
-        height_percentage = current_height / current_width
-        width_percentage = 1
+        height_percentage, width_percentage = percentage(current_height, current_height)
 
-    width = current_width
-    height = current_height 
+        #check if max_height, max_width and max_sqft = 0.
+        if max_height == 0:
+            max_height = 100**100
 
-    while  (((width + width_percentage) * (height + height_percentage) / 144) <= max_sqft \
-        and (height <= max_height) and (width <= max_width)):
+        if max_width == 0:
+            max_width= 100**100
 
-        width += width_percentage
-        height += height_percentage
-   
-    safe_sqft = width * height / 144
+        if max_sqft ==0:
+            max_sqft_feet = 100**100
+       
+        return cal_h_w_sqft(current_height, current_width,height_percentage,
+            width_percentage, max_height, max_width, max_sqft)    
 
-    return f'        Height: {round(height, 2)}\n         Width: {round(width, 2)}\nSquare Footage: {round(safe_sqft, 2)}'
