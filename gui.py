@@ -15,6 +15,7 @@ root.title('proportion tool for Debra')
 root.configure(bg = gray)
 root.columnconfigure(0, weight = 1)
 root.rowconfigure(0, weight = 1)
+root.iconphoto(True, PhotoImage(file = 'resources/images/icon.png'))
 #root.eval('tk::PlaceWindow . center')
 #root.resizable(0,0)
 
@@ -22,10 +23,12 @@ sub_window = Frame(root, bg = gray, width = 610,height = 600, relief = 'solid',
     bd = 1)
 sub_window.grid(row = 0, column = 0, padx = 10, pady = 10)
 
+
 title_label = Label(sub_window, text = 'Proportion Tool', font = ('Times', 40),
     bg = gray, fg = orange, padx = 5, pady = 4)
 
 title_label.grid(row = 0, column = 0)
+
 
 advanced_button = Button(sub_window, text = 'Advanced', bg = gray_medium,
     fg = orange, width = 10, relief = 'ridge', font = ('Ariel', 10), bd = 1,
@@ -55,7 +58,6 @@ class Field:
             selectcolor = gray_medium, overrelief = 'sunken', takefocus = 0)
 
         self.radio1.configure(bg = gray_medium, fg = orange)
-        #self.radio1.select()
 
         self.radio2 = Radiobutton(self.frame, text = 'feet',
             variable = self.radio_var, value = 1, width = 5,
@@ -102,7 +104,17 @@ def create_fields():
 
 def copy_to_clipboard(text):
     root.clipboard_clear()
-    root.clipboard_append(updated_calculation[0])
+
+    try:
+        text = updated_calculation[0].split('\n')
+        root.clipboard_append(f'Height: {text[0]} \nWidth: {text[1]} \nSquare' \
+            + f'Footage: {text[2]}')
+    except IndexError:
+        text = [0,0,0]
+
+        root.clipboard_append(f'Height: {text[0]} \nWidth: {text[1]} \nSquare' \
+            + f'Footage: {text[2]}')
+
     root.update()
 
 
@@ -111,10 +123,7 @@ def tab_order():
         fields[3].entry, fields[4].entry] 
 
     entry_fields[0].focus()
-    print(entry_fields)
-
-    # for field in entry_fields:
-    #     field.lift()        
+    print(entry_fields)      
 
 
 def is_digit(text):
@@ -147,6 +156,7 @@ updated_calculation = ['']
 
 fields = create_fields()
 
+
 cal_btn_frame = Frame(sub_window, bg = gray, width = 600)
 
 cal_btn_frame.grid(row = 6, column = 0, pady = 5, padx = 5)
@@ -156,6 +166,7 @@ cal_button = Button(cal_btn_frame, text = 'CALCULATE', bg = gray_medium,
     overrelief = 'sunken', command = calculate, takefocus = 0)
 
 cal_button.grid(row = 0, column = 0, pady = 10, padx = 13)
+
 
 cal_radio_var = IntVar()
 
@@ -175,32 +186,50 @@ cal_radio_feet = Radiobutton(cal_btn_frame, text = 'feet',
 
 cal_radio_feet.grid(row = 0, column = 2, padx = 0, pady = 5)
 
+
 clear_all_btn = Button(cal_btn_frame, text = 'Clear All', bg = gray,
     fg = orange, width = 8, relief = 'ridge', font = ('Ariel', 10),
     bd = 1, overrelief = 'sunken', command = clear_all, takefocus = 0)
 
 clear_all_btn.grid(row = 0, column = 3, padx = 20, sticky = 'e')
 
+
 return_frame = Frame(sub_window, bg = gray_medium, width = 600)
 
 return_frame.grid(row = 7, column = 0, pady = 5, padx = 5)
 
-return_label = Label(return_frame, bg = gray_medium, relief = 'flat',
-    fg = orange, width = 50, height = 3, font = ('Ariel', 15))
 
-return_label.grid(row = 0, column = 0, pady = 5 )
+info_label = Label(return_frame, bg = gray_medium, relief = 'flat',
+    fg = orange, width = 20, height = 3, font = ('Ariel', 15))
+
+info_label.grid(row = 0, column = 0, pady = 5 )
+
+info_label.configure(justify = 'right', anchor = 'e',
+    text = 'Height: \nWidth: \nSquare Footage: ' )
+
+
+return_label = Label(return_frame, bg = gray_medium, relief = 'flat',
+    fg = orange, width = 20, height = 3, font = ('Ariel', 15))
+
+return_label.grid(row = 0, column = 1, pady = 5 )
 
 return_label.configure(justify = 'left', anchor = 'w',
-    text = '               Height: \n                Width: \n Square Footage: ' )
+    text = '0 \n0 \n0 ' )
+
 
 copy_button = Button(return_frame, text = 'Copy', bg = gray_medium,
     fg = orange, width = 10, relief = 'ridge', font = ('Ariel', 10), bd = 1,
     command = lambda : copy_to_clipboard('text'), overrelief = 'sunken',
     takefocus = 0)
 
-copy_button.grid(row = 0, column = 0, padx = 5, pady = 5, sticky = 'ne')
+copy_button.grid(row = 0, column = 2, padx = 5, pady = 5, sticky = 'ne')
+
+
+#temp patch for square footage frame.
+fields[4].radio1.configure(state = DISABLED)
+fields[4].radio2.select()
+
 
 root.bind('<Return>', calculate )
-
 tab_order()
 root.mainloop()
