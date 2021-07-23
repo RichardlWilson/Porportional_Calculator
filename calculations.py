@@ -60,10 +60,10 @@ def calculation(str_info):
         width = current_width
         height = current_height 
 
-        while  (((width + width_percentage) * (height + height_percentage) / 144) <= max_sqft \
-            and (height <= max_height) and (width <= max_width)):
+        while  (((width + width_percentage) * (height + height_percentage) <= max_sqft * 12) \
+            and (height + height_percentage  <= max_height) and (width + width_percentage <= max_width)):
 
-            print('Check point')
+            print('Check point', width, height)
 
             width += width_percentage
             height += height_percentage

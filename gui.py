@@ -5,9 +5,9 @@ import calculations
 
 #colors_used
 orange = '#FA9605'
-gray = '#3B3B3C'
-gray_medium = '#4F4F51'
-gray_light = '#9D9FA2'
+gray = '#273947'
+gray_medium = '#354959'
+gray_light = '#5f7587'
 
 root = Tk()
 root.geometry('630x560')
