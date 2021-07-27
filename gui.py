@@ -29,11 +29,15 @@ title_label = Label(sub_window, text = 'Proportion Tool', font = ('Times', 40),
 
 title_label.grid(row = 0, column = 0)
 
+def destroy_now():
+    fields[0].frame.grid_forget()
 
 advanced_button = Button(sub_window, text = 'Advanced', bg = gray_medium,
     fg = orange, width = 10, relief = 'ridge', font = ('Ariel', 10), bd = 1,
-    overrelief = 'sunken')
-#advanced_button.grid(row = 0, column = 0, padx = 5, pady = 5, sticky = 'ne')
+    overrelief = 'sunken', command = destroy_now)
+
+advanced_button.grid(row = 0, column = 0, padx = 5, pady = 5, sticky = 'ne')
+
 
 class Field:
     def __init__(self):
@@ -145,11 +149,11 @@ def clear_all():
 def calculate(key_event = None):
     info = []
     for field in fields:
-        info.append([field.entry.get(),field.radio_var.get()])    
+        info.append([field.entry.get(),field.radio_var.get()])
+         
+    calculation = calculations.Calculation(info)
+    updated_calculation[0] = calculation.compute()
 
-    updated_calculation[0] = calculations.calculation(info)
-
-    print(info)
     return_label['text'] = updated_calculation[0]
 
 
