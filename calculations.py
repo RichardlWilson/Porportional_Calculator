@@ -91,7 +91,7 @@ class Calculation:
 
 
     def cal_entries(self):
-        while (((self.current_height.number + self.current_height.scale_increase) * (self.current_width.number + self.current_width.scale_increase) / 144 <= self.max_sqft.number) \
+        while (((self.current_height.number + self.current_height.scale_increase) * (self.current_width.number + self.current_width.scale_increase) / 144 <= self.max_sqft.number / 12) \
             and (self.current_height.number + self.current_height.scale_increase <= self.max_height.number) \
             and (self.current_width.number + self.current_width.scale_increase <= self.max_width.number)):
 
@@ -102,7 +102,7 @@ class Calculation:
 
             
 
-        safe_sqft = self.current_height.number * self.current_width.number / 144
+        safe_sqft = (self.current_height.number * self.current_width.number / 144)
         
         if self.current_width.number == 0 or self.current_height.number == 0:
             return 'Error:\nCurrent Height Empty or\nCurrent Width Empty'
