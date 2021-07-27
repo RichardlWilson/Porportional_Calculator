@@ -60,9 +60,9 @@ class Calculation:
         '''
         Checks is max_height, max_width or max_sqft equal zero. If so, then change them to an un reachable limit.
         '''
-        if (self.max_height == 0) and (self.max_width == 0) and (self.max_sqft == 0):
-            print('all max zeros Now', self.max_height, self.max_width, self.max_sqft)
-            return True
+        # if (self.max_height == 0) and (self.max_width == 0) and (self.max_sqft == 0):
+        #     print('all max zeros Now', self.max_height, self.max_width, self.max_sqft)
+        #     return True
 
         if not self.max_height.number:
             self.max_height.number = 100**100
@@ -82,7 +82,7 @@ class Calculation:
         '''
         if self.current_height.number > self.current_width.number:
             self.current_height.scale_increase = 1
-            self.current_width.scale_increase = current_width.number / current_height.number
+            self.current_width.scale_increase = self.current_width.number / self.current_height.number
         else:
             self.current_height.scale_increase = self.current_height.number / self.current_width.number
             self.current_width.scale_increase = 1
@@ -91,12 +91,16 @@ class Calculation:
 
 
     def cal_entries(self):
-        while (((self.current_height.number + self.current_height.scale_increase) * (self.current_width.number + self.current_width.scale_increase) <= self.max_sqft.number) \
+        while (((self.current_height.number + self.current_height.scale_increase) * (self.current_width.number + self.current_width.scale_increase) / 144 <= self.max_sqft.number) \
             and (self.current_height.number + self.current_height.scale_increase <= self.max_height.number) \
             and (self.current_width.number + self.current_width.scale_increase <= self.max_width.number)):
 
             self.current_height.number += self.current_height.scale_increase
             self.current_width.number += self.current_width.scale_increase
+
+            print(self.current_height, self.current_width,self.current_height.scale_increase, self.current_width.scale_increase, self.max_sqft)
+
+            
 
         safe_sqft = self.current_height.number * self.current_width.number / 144
         

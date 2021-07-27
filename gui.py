@@ -3,6 +3,15 @@
 from tkinter import *
 import calculations
 
+import sys
+import os
+
+try:
+   wd = sys._MEIPASS
+except AttributeError:
+   wd = os.getcwd()
+file_path = os.path.join(wd,'resources\\images\\icon.png')
+
 #colors_used
 orange = '#FA9605'
 gray = '#273947'
@@ -11,11 +20,11 @@ gray_light = '#5f7587'
 
 root = Tk()
 root.geometry('630x560')
-root.title('proportion tool for Debra')
+root.title('BETA VERSION')
 root.configure(bg = gray)
 root.columnconfigure(0, weight = 1)
 root.rowconfigure(0, weight = 1)
-root.iconphoto(True, PhotoImage(file = 'resources/images/icon.png'))
+root.iconphoto(True, PhotoImage(file = file_path))
 #root.eval('tk::PlaceWindow . center')
 #root.resizable(0,0)
 
@@ -26,7 +35,6 @@ sub_window.grid(row = 0, column = 0, padx = 10, pady = 10)
 
 title_label = Label(sub_window, text = 'Proportion Tool', font = ('Times', 40),
     bg = gray, fg = orange, padx = 5, pady = 4)
-
 title_label.grid(row = 0, column = 0)
 
 def destroy_now():
@@ -36,7 +44,7 @@ advanced_button = Button(sub_window, text = 'Advanced', bg = gray_medium,
     fg = orange, width = 10, relief = 'ridge', font = ('Ariel', 10), bd = 1,
     overrelief = 'sunken', command = destroy_now)
 
-advanced_button.grid(row = 0, column = 0, padx = 5, pady = 5, sticky = 'ne')
+#advanced_button.grid(row = 0, column = 0, padx = 5, pady = 5, sticky = 'ne')
 
 
 class Field:
@@ -161,7 +169,6 @@ updated_calculation = ['']
 
 fields = create_fields()
 
-
 cal_btn_frame = Frame(sub_window, bg = gray, width = 600)
 
 cal_btn_frame.grid(row = 6, column = 0, pady = 5, padx = 5)
@@ -172,61 +179,33 @@ cal_button = Button(cal_btn_frame, text = 'CALCULATE', bg = gray_medium,
 
 cal_button.grid(row = 0, column = 0, pady = 10, padx = 13)
 
-
 cal_radio_var = IntVar()
-
 cal_radio_var.set(1)
-
-# cal_radio_inches = Radiobutton(cal_btn_frame, text = 'inches',
-#     variable = cal_radio_var, value = 1, width = 5, font = ('Ariel', 15),
-#     indicatoron = 0, relief = 'groove', bd = 1, selectcolor = gray_medium,
-#     overrelief = 'sunken', bg = gray_medium, fg = orange, takefocus = 0)
-
-# cal_radio_inches.grid(row = 0, column = 1, padx = 0, pady = 5)
-
-# cal_radio_feet = Radiobutton(cal_btn_frame, text = 'feet',
-#     variable = cal_radio_var, value = 2, width = 5, font = ('Ariel', 15),
-#     indicatoron = 0, relief = 'groove', bd = 1, selectcolor = gray_medium,
-#     overrelief = 'sunken', bg = gray_medium, fg = orange, takefocus = 0)
-
-# cal_radio_feet.grid(row = 0, column = 2, padx = 0, pady = 5)
-
 
 clear_all_btn = Button(cal_btn_frame, text = 'Clear All', bg = gray,
     fg = orange, width = 8, relief = 'ridge', font = ('Ariel', 10),
     bd = 1, overrelief = 'sunken', command = clear_all, takefocus = 0)
-
 clear_all_btn.grid(row = 0, column = 3, padx = 20, sticky = 'e')
 
-
 return_frame = Frame(sub_window, bg = gray_medium, width = 600)
-
 return_frame.grid(row = 7, column = 0, pady = 5, padx = 5)
-
 
 info_label = Label(return_frame, bg = gray_medium, relief = 'flat',
     fg = orange, width = 20, height = 3, font = ('Ariel', 15))
-
 info_label.grid(row = 0, column = 0, pady = 5 )
-
 info_label.configure(justify = 'right', anchor = 'e',
     text = 'Height: \nWidth: \nSquare Footage: ' )
 
-
 return_label = Label(return_frame, bg = gray_medium, relief = 'flat',
     fg = orange, width = 20, height = 3, font = ('Ariel', 15))
-
 return_label.grid(row = 0, column = 1, pady = 5 )
-
 return_label.configure(justify = 'left', anchor = 'w',
     text = '0 \n0 \n0 ' )
-
 
 copy_button = Button(return_frame, text = 'Copy', bg = gray_medium,
     fg = orange, width = 10, relief = 'ridge', font = ('Ariel', 10), bd = 1,
     command = lambda : copy_to_clipboard('text'), overrelief = 'sunken',
     takefocus = 0)
-
 copy_button.grid(row = 0, column = 2, padx = 5, pady = 5, sticky = 'ne')
 
 
