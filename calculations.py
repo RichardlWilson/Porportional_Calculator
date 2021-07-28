@@ -33,14 +33,22 @@ class Calculation:
 
         check_empty = lambda entry: 0 if entry == '' else float(entry)
 
-        self. current_height =  Entry(check_empty(str_info[0][0]), bool(str_info[0][1]))
-        self.current_width = Entry(check_empty(str_info[1][0]), bool(str_info[1][1]))
-        self.max_height = Entry(check_empty(str_info[2][0]), bool(str_info[2][1]))
-        self.max_width = Entry(check_empty(str_info[3][0]), bool(str_info[3][1]))
+        self. current_height =  Entry(check_empty(str_info[0][0]),
+            bool(str_info[0][1]))
+
+        self.current_width = Entry(check_empty(str_info[1][0]),
+            bool(str_info[1][1]))
+
+        self.max_height = Entry(check_empty(str_info[2][0]),
+            bool(str_info[2][1]))
+
+        self.max_width = Entry(check_empty(str_info[3][0]),
+            bool(str_info[3][1]))
+
         self.max_sqft = Entry(check_empty(str_info[4][0]), True)
-        # self.height_percentage = 0
-        # self.width_percentage = 0
-        self.entry_list = [self.current_height, self.current_width, self.max_height, self.max_width, self.max_sqft]
+
+        self.entry_list = [self.current_height, self.current_width,
+            self.max_height, self.max_width, self.max_sqft]
 
 
     def convert_to_inches(self):
@@ -58,20 +66,26 @@ class Calculation:
 
     def check_zeros(self):
         '''
-        Checks is max_height, max_width or max_sqft equal zero. If so, then change them to an un reachable limit.
+        Checks is max_height, max_width or max_sqft equal zero. If so, then
+        change them to an un reachable limit.
         '''
-        # if (self.max_height == 0) and (self.max_width == 0) and (self.max_sqft == 0):
-        #     print('all max zeros Now', self.max_height, self.max_width, self.max_sqft)
+        if self.current_width.number == 0 or self.current_height.number == 0:
+            return True
+
+        # if (self.max_height == 0) and (self.max_width == 0) and
+        #   (self.max_sqft == 0):
+        #     print('all max zeros Now', self.max_height, self.max_width,
+        #    self.max_sqft)
         #     return True
 
         if not self.max_height.number:
-            self.max_height.number = 100**100
+            self.max_height.number = 2000000
 
         if not self.max_width.number:
-            self.max_width.number = 100**100
+            self.max_width.number = 2000000
 
         if not self.max_sqft.number:
-            self.max_sqft.number = 100**100
+            self.max_sqft.number = 2000000
 
         return False
 
@@ -82,39 +96,61 @@ class Calculation:
         '''
         if self.current_height.number > self.current_width.number:
             self.current_height.scale_increase = 1
-            self.current_width.scale_increase = self.current_width.number / self.current_height.number
+            self.current_width.scale_increase = self.current_width.number\
+             / self.current_height.number
         else:
-            self.current_height.scale_increase = self.current_height.number / self.current_width.number
+            self.current_height.scale_increase = self.current_height.number \
+            / self.current_width.number
             self.current_width.scale_increase = 1
 
         return self.current_height.scale_increase, self.current_width.scale_increase
 
 
     def cal_entries(self):
-        while (((self.current_height.number + self.current_height.scale_increase) * (self.current_width.number + self.current_width.scale_increase) / 144 <= self.max_sqft.number / 12) \
-            and (self.current_height.number + self.current_height.scale_increase <= self.max_height.number) \
-            and (self.current_width.number + self.current_width.scale_increase <= self.max_width.number)):
+
+        if self.max_height.number == 2000000 and self.max_width.number == 2000000 \
+            and self.max_sqft.number == 2000000:
+
+            return f'{round(self.current_height.number, 2)}" | '\
+                + f'{round(self.current_height.number / 12, 2)}\'\n' \
+                + f'{round(self.current_width.number, 2)}" | '\
+                + f'{round(self.current_width.number / 12, 2)}\'\n' \
+                + f'{round(self.current_height.number * self.current_width.number / 144 , 2)}\''
+        
+
+        while (((self.current_height.number + self.current_height.scale_increase) \
+            * (self.current_width.number + self.current_width.scale_increase) \
+             / 144 <= self.max_sqft.number / 12) \
+            and (self.current_height.number + self.current_height.scale_increase \
+                <= self.max_height.number) \
+            and (self.current_width.number + self.current_width.scale_increase \
+                <= self.max_width.number)):
 
             self.current_height.number += self.current_height.scale_increase
             self.current_width.number += self.current_width.scale_increase
 
-            print(self.current_height, self.current_width,self.current_height.scale_increase, self.current_width.scale_increase, self.max_sqft)
-
-            
+            print(self.current_height, self.current_width,
+                self.current_height.scale_increase,
+                self.current_width.scale_increase,
+                self.max_sqft)
 
         safe_sqft = (self.current_height.number * self.current_width.number / 144)
-        
-        if self.current_width.number == 0 or self.current_height.number == 0:
-            return 'Error:\nCurrent Height Empty or\nCurrent Width Empty'
 
-        return f'{round(self.current_height.number, 2)}" | {round(self.current_height.number / 12, 2)}\'\n' \
-            + f'{round(self.current_width.number, 2)}" | {round(self.current_width.number / 12, 2)}\'\n{round(safe_sqft, 2)}\''
+        return f'{round(self.current_height.number, 2)}" | '\
+            + f'{round(self.current_height.number / 12, 2)}\'\n' \
+            + f'{round(self.current_width.number, 2)}" | '\
+            + f'{round(self.current_width.number / 12, 2)}\'\n' \
+            + f'{round(safe_sqft, 2)}\''
 
 
     def compute(self):
         self.convert_to_inches()
-        self.check_zeros()
-        self.scale_ratio()
+        zeros = self.check_zeros()
 
-        return self.cal_entries()            
+        if zeros:
+            return 'Error:\nCurrent Height Empty or\nCurrent Width Empty'
+        else:    
+            self.scale_ratio()
+
+            return self.cal_entries()          
 
