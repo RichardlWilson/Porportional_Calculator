@@ -117,6 +117,14 @@ class Calculation:
                 + f'{round(self.current_width.number / 12, 2)}\'\n' \
                 + f'{round(self.current_height.number * self.current_width.number / 144 , 2)}\''
         
+        while ((self.current_height.number * self.current_width.number / 144 >= self.max_sqft.number / 12) \
+            and (self.current_height.number >= self.max_height.number)\
+            and (self.current_width.number >= self.max_width.number)):
+        
+            print('too low')
+
+            self.current_height.number -= self.current_height.scale_increase
+            self.current_width.number -= self.current_width.scale_increase
 
         while (((self.current_height.number + self.current_height.scale_increase) \
             * (self.current_width.number + self.current_width.scale_increase) \
