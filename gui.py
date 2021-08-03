@@ -1,10 +1,10 @@
 #GUI 
 version = 'BETA v1.0.2'
 from tkinter import *
-import calculations
-
 import sys
 import os
+
+import calculations
 
 class Themes:
     def __init__(self):
@@ -41,6 +41,53 @@ class Themes:
         self.layer_1 = '#34d1c9'
         self.layer_2 = '#97f7f2'
         self.layer_3 = '#d7fcfa'     
+
+
+
+class Header:
+    def __init__(self):
+        self.frame = Frame(sub_window, bg = theme.layer_3, width = 600)
+
+        self.title_label = Label(self.frame, text = 'Proportional Calculator', font = ('Ariel', 27),
+            bg = theme.layer_3, fg = theme.text_color, width = 27)
+
+        self.basic_button = Button(self.frame, text = 'Basic', bg = theme.layer_2,
+            fg = theme.text_color, width = 8, relief = 'ridge', font = ('Ariel', 10), bd = 1,
+            overrelief = 'sunken', takefocus = 0, command = self.basic_btn)
+
+        self.advanced_button = Button(self.frame, text = 'Advanced', bg = theme.layer_2,
+            fg = theme.text_color, width = 8, relief = 'ridge', font = ('Ariel', 10), bd = 1,
+            overrelief = 'sunken', takefocus = 0, command = self.advanced_btn)
+
+
+    def show(self):
+        self.frame.grid(row = 0, column = 0, pady = 5, padx = 5)
+        self.title_label.grid(row = 0, column = 0, padx = 5, pady = 4)
+        self.advanced_button.grid(row = 0, column = 0, padx = 5, pady = 5, sticky = 'ne')
+
+    def basic_btn(self):
+        root.geometry('630x380')
+        self.basic_button.grid_forget()
+        self.advanced_button.grid(row = 0, column = 0, padx = 5, pady = 5, sticky = 'ne')
+        
+        for field in fields[2:]:
+            field.entry.delete(0,END)
+            field.frame.grid_forget()
+
+        calculate_sec.calculate()
+
+
+    def advanced_btn(self):
+        root.geometry('630x560')
+        self.advanced_button.grid_forget()
+        self.basic_button.grid(row = 0, column = 0, padx = 5, pady = 5, sticky = 'ne')
+        
+        num = 3
+        for field in fields[2:]:
+            field.show(num)
+            num += 1  
+
+        #all other advanced options .grid() go here.
 
 
 
@@ -129,10 +176,86 @@ class SquareFootage:
 
 
 
-class CalculatButton:
+class CalculateSection:
     def __init__(self):
-        pass 
-        #create cal button area here.
+        self.frame = Frame(sub_window, bg = theme.layer_3, width = 600)
+
+        self.cal_button = Button(self.frame, text = 'CALCULATE', bg = theme.layer_2,
+            fg = theme.text_color, width = 23, relief = 'ridge', font = ('Ariel', 15), bd = 1,
+            overrelief = 'sunken', command = self.calculate, takefocus = 0)
+
+        self.cal_radio_var = IntVar()
+        self.cal_radio_var.set(1)
+
+        self.clear_all_btn = Button(self.frame, text = 'Clear All', bg = theme.layer_3,
+            fg = theme.text_color, width = 8, relief = 'ridge', font = ('Ariel', 10),
+            bd = 1, overrelief = 'sunken', command = self.clear_all, takefocus = 0)
+    
+    def show(self):
+        self.frame.grid(row = 6, column = 0, pady = 5, padx = 5)
+        self.cal_button.grid(row = 0, column = 0, pady = 10, padx = 13)
+        self.clear_all_btn.grid(row = 0, column = 3, padx = 20, sticky = 'e')
+
+    def calculate(self,key_event = None):
+        info = []
+        for field in fields[:4]:
+            info.append([field.entry.get(),field.radio_var.get()])
+
+        info.append([fields[4].entry.get(), 1])    
+             
+        calculation = calculations.Calculation(info)
+        updated_calculation[0] = calculation.compute()
+
+        result_sec.return_label['text'] = updated_calculation[0]    
+
+    def clear_all(self):
+        for field in fields:
+            field.entry.delete(0, END)
+            return_label['text'] = '0\n0\n0'    
+
+class ResultSection:
+    def __init__(self):
+
+        self.frame = Frame(sub_window, bg = theme.layer_2, width = 600)
+
+        self.info_label = Label(self.frame, bg = theme.layer_2, relief = 'flat',
+            fg = theme.text_color, width = 20, height = 3, font = ('Ariel', 15))
+        
+        self.info_label.configure(justify = 'right', anchor = 'e',
+            text = 'Height: \nWidth: \nSquare Footage: ' )
+
+        self.return_label = Label(self.frame, bg = theme.layer_2, relief = 'flat',
+            fg = theme.text_color, width = 20, height = 3, font = ('Ariel', 15))
+        
+        self.return_label.configure(justify = 'left', anchor = 'w',
+            text = '0 \n0 \n0 ' )
+
+        self.copy_button = Button(self.frame, text = 'Copy', bg = theme.layer_2,
+            fg = theme.text_color, width = 10, relief = 'ridge', font = ('Ariel', 10), bd = 1,
+            command = lambda : self.copy_to_clipboard('text'), overrelief = 'sunken',
+            takefocus = 0)
+        
+
+    def show(self):
+        self.frame.grid(row = 7, column = 0, pady = 5, padx = 5)
+        self.info_label.grid(row = 0, column = 0, pady = 5)
+        self.return_label.grid(row = 0, column = 1, pady = 5)
+        self.copy_button.grid(row = 0, column = 2, padx = 5, pady = 5, sticky = 'ne')
+
+    def copy_to_clipboard(self, text):
+        root.clipboard_clear()
+
+        try:
+            text = updated_calculation[0].split('\n')
+            root.clipboard_append(f'Height: {text[0]} \nWidth: {text[1]} \nSquare' \
+                + f'Footage: {text[2]}')
+        except IndexError:
+            text = [0,0,0]
+
+            root.clipboard_append(f'Height: {text[0]} \nWidth: {text[1]} \nSquare' \
+                + f'Footage: {text[2]}')
+
+        root.update() 
 
 
 
@@ -161,37 +284,12 @@ def win_center(app_width, app_height):
     return f'{app_width}x{app_height}+{center_x}+{center_y}'
 
 
-def basic_btn():
-    root.geometry(win_center(630,380))
-    basic_button.grid_forget()
-    advanced_button.grid(row = 0, column = 0, padx = 5, pady = 5, sticky = 'ne')
-    
-    for field in fields[2:]:
-        field.entry.delete(0,END)
-        field.frame.grid_forget()
-
-    calculate()
-
-
-def advanced_btn():
-    root.geometry(win_center(630,560))
-    advanced_button.grid_forget()
-    basic_button.grid(row = 0, column = 0, padx = 5, pady = 5, sticky = 'ne')
-    
-    num = 3
-    for field in fields[2:]:
-        field.show(num)
-        num += 1  
-
-    #all other advanced options .grid() go here.        
-    
-
 def create_fields():
     '''
     Creates the entry fields.
     '''
     #creates current height, current width, max height, max width and
-    #max square footage entry fields.
+    #max square footage data entry fields.
     fields = [EntryField() for num in range(4)]
 
     num = 1
@@ -205,29 +303,13 @@ def create_fields():
     fields[2].label.configure(text = 'Max Height:')
     fields[3].label.configure(text = 'Max Width:')
     
-    #creates the max square footage entry field
+    #creates the max square footage data entry field
     max_square_footage = SquareFootage()
     max_square_footage.label.configure(text = 'Max Sqaure Footage:')
     # max_square_footage.show(5)
     fields.append(max_square_footage)
 
     return fields
-
-
-def copy_to_clipboard(text):
-    root.clipboard_clear()
-
-    try:
-        text = updated_calculation[0].split('\n')
-        root.clipboard_append(f'Height: {text[0]} \nWidth: {text[1]} \nSquare' \
-            + f'Footage: {text[2]}')
-    except IndexError:
-        text = [0,0,0]
-
-        root.clipboard_append(f'Height: {text[0]} \nWidth: {text[1]} \nSquare' \
-            + f'Footage: {text[2]}')
-
-    root.update()
 
 
 def tab_order():
@@ -248,39 +330,19 @@ def is_digit(text):
         return False
 
 
-def clear_all():
-    for field in fields:
-        field.entry.delete(0, END)
-        return_label['text'] = '0\n0\n0'
-
-
-def calculate(key_event = None):
-    info = []
-    for field in fields[:4]:
-        info.append([field.entry.get(),field.radio_var.get()])
-
-    info.append([fields[4].entry.get(), 1])    
-         
-    calculation = calculations.Calculation(info)
-    updated_calculation[0] = calculation.compute()
-
-    return_label['text'] = updated_calculation[0]
-
-
 theme = Themes()
 #theme.lava()
 
 root = Tk()
-#root.geometry('630x560')
 root.title('Proprtional Calculator ' + version)
 root.configure(bg = theme.layer_3)
 root.columnconfigure(0, weight = 1)
 root.rowconfigure(0, weight = 1)
 root.geometry(win_center(630, 380))#'630x380'
+
 file_path = get_path()
+
 root.iconphoto(True, PhotoImage(file = file_path))
-#root.eval('tk::PlaceWindow . center')
-#root.resizable(0,0)
 
 sub_window = Frame(root, bg = theme.layer_3, width = 610,height = 600, relief = 'solid', 
     bd = 1)
@@ -289,76 +351,25 @@ sub_window.grid(row = 0, column = 0, padx = 10, pady = 10)
 
 #create a tool bar to go at top of window. house advanced, basic and theme buttons.
 
-
-#create class for this header section
-title_label = Label(sub_window, text = 'Proportional Calculator', font = ('Ariel', 27),
-    bg = theme.layer_3, fg = theme.text_color, padx = 5, pady = 4)
-title_label.grid(row = 0, column = 0)
-
-basic_button = Button(sub_window, text = 'Basic', bg = theme.layer_2,
-    fg = theme.text_color, width = 8, relief = 'ridge', font = ('Ariel', 10), bd = 1,
-    overrelief = 'sunken', takefocus = 0, command = basic_btn)
-
-advanced_button = Button(sub_window, text = 'Advanced', bg = theme.layer_2,
-    fg = theme.text_color, width = 8, relief = 'ridge', font = ('Ariel', 10), bd = 1,
-    overrelief = 'sunken', takefocus = 0, command = advanced_btn)
-
-advanced_button.grid(row = 0, column = 0, padx = 5, pady = 5, sticky = 'ne')
-
-
 updated_calculation = ['']
 
+#creates header section.
+header = Header()
+header.show()
+
+#creates data entry fields
 fields = create_fields()
 
-
-#create a class for the scale section
-
-
-#create class for the calculate section
-cal_btn_frame = Frame(sub_window, bg = theme.layer_3, width = 600)
-
-cal_btn_frame.grid(row = 6, column = 0, pady = 5, padx = 5)
-
-cal_button = Button(cal_btn_frame, text = 'CALCULATE', bg = theme.layer_2,
-    fg = theme.text_color, width = 23, relief = 'ridge', font = ('Ariel', 15), bd = 1,
-    overrelief = 'sunken', command = calculate, takefocus = 0)
-
-cal_button.grid(row = 0, column = 0, pady = 10, padx = 13)
-
-cal_radio_var = IntVar()
-cal_radio_var.set(1)
-
-clear_all_btn = Button(cal_btn_frame, text = 'Clear All', bg = theme.layer_3,
-    fg = theme.text_color, width = 8, relief = 'ridge', font = ('Ariel', 10),
-    bd = 1, overrelief = 'sunken', command = clear_all, takefocus = 0)
-clear_all_btn.grid(row = 0, column = 3, padx = 20, sticky = 'e')
-
+#creates the calculation button section.
+calculate_sec = CalculateSection()
+calculate_sec.show()
 
 #create class for the return results section.
-return_frame = Frame(sub_window, bg = theme.layer_2, width = 600)
-return_frame.grid(row = 7, column = 0, pady = 5, padx = 5)
-
-info_label = Label(return_frame, bg = theme.layer_2, relief = 'flat',
-    fg = theme.text_color, width = 20, height = 3, font = ('Ariel', 15))
-info_label.grid(row = 0, column = 0, pady = 5 )
-info_label.configure(justify = 'right', anchor = 'e',
-    text = 'Height: \nWidth: \nSquare Footage: ' )
-
-return_label = Label(return_frame, bg = theme.layer_2, relief = 'flat',
-    fg = theme.text_color, width = 20, height = 3, font = ('Ariel', 15))
-return_label.grid(row = 0, column = 1, pady = 5 )
-return_label.configure(justify = 'left', anchor = 'w',
-    text = '0 \n0 \n0 ' )
-
-copy_button = Button(return_frame, text = 'Copy', bg = theme.layer_2,
-    fg = theme.text_color, width = 10, relief = 'ridge', font = ('Ariel', 10), bd = 1,
-    command = lambda : copy_to_clipboard('text'), overrelief = 'sunken',
-    takefocus = 0)
-copy_button.grid(row = 0, column = 2, padx = 5, pady = 5, sticky = 'ne')
-
+result_sec = ResultSection()
+result_sec.show()
 
 
 if __name__ == '__main__':
-    root.bind('<Return>', calculate )
+    root.bind('<Return>', calculate_sec.calculate)
     tab_order()
     root.mainloop()
