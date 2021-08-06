@@ -61,7 +61,7 @@ def square_footage(current_height, current_width):
     '''
     calculates square footage of current height and width.
     '''
-    return current_height * current_width /144 
+    return round(current_height * current_width /144, 2) 
 
 
 def up_to_max_square_footage(current_height, current_width, height_scale,
@@ -72,8 +72,8 @@ def up_to_max_square_footage(current_height, current_width, height_scale,
     if max_sqft == 0:
         return current_height, current_width, square_footage(current_height,
             current_width)
-
-    while ((square_footage(current_height, current_width) >= max_sqft)):
+    
+    while ((square_footage(current_height, current_width) > max_sqft)):
 
         current_height, current_width = subtract(current_height, current_width,
             height_scale, width_scale)
@@ -83,7 +83,7 @@ def up_to_max_square_footage(current_height, current_width, height_scale,
 
         current_height, current_width = add(current_height, current_width,
             height_scale, width_scale)
-
+        
     return round(current_height, 2), round(current_width, 2), \
     round(square_footage(current_height, current_width), 2)
 

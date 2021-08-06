@@ -1,5 +1,5 @@
 #GUI 
-version = 'BETA v1.0.2'
+version = ' v1.1.0'
 from tkinter import *
 import sys
 import os
@@ -18,12 +18,14 @@ class Themes:
         self.layer_2 = '#354959'
         self.layer_3 = '#273947'
 
+
     def default(self):
         self.text_color = '#FA9605'
         self.entry_text_color = 'white'
         self.layer_1 = '#5f7587'
         self.layer_2 = '#354959'
         self.layer_3 = '#273947'
+
 
     def aqua(self):
         self.text_color = '#1cc4fc'
@@ -32,12 +34,14 @@ class Themes:
         self.layer_2 = '#1b5b70'
         self.layer_3 = '#153b47'
 
+
     def lava(self):
         self.text_color = '#f53d0f'
         self.entry_text_color = 'white'
         self.layer_1 = '#963921'
         self.layer_2 = '#692e1e'
         self.layer_3 = '#421003'
+
 
     def wind(self):
         self.text_color = '#169e97'
@@ -46,20 +50,56 @@ class Themes:
         self.layer_2 = '#97f7f2'
         self.layer_3 = '#d7fcfa'
 
+
     def switch(self):
         self.theme_num += 1
 
         if self.theme_num >4:
             self.theme_num = 1
-
-        elif self.theme_num == 1:
-            self.default()
+            self.default()    
         elif self.theme_num == 2:
             self.aqua()
         elif self.theme_num == 3:
             self.lava()
         elif self.theme_num == 4:
-            self.wind()          
+            self.wind()
+            
+        root.configure(bg = self.layer_3)
+        sub_window.configure(bg = self.layer_3)
+
+        toolbar.button_frame.configure(bg = self.layer_3)
+        toolbar.theme_button.configure(bg = self.layer_2, fg = self.text_color)
+        toolbar.basic_button.configure(bg = self.layer_2, fg = self.text_color)
+        toolbar.advanced_button.configure(bg = self.layer_2, fg = self.text_color)
+
+        header.frame.configure(bg = self.layer_3)
+        header.title_label.configure(bg = self.layer_3, fg = self.text_color)
+
+        for field in data_entries[0:4]:
+            field.frame.configure(bg = self.layer_2)
+            field.label.configure(bg = self.layer_2, fg = self.text_color)
+            field.entry.configure(bg = self.layer_1)
+            field.radio1.configure(bg = self.layer_2, selectcolor = self.layer_2, fg = self.text_color)
+            field.radio2.configure(bg = self.layer_2, selectcolor = self.layer_2, fg = self.text_color)
+            field.clear_btn.configure(bg = self.layer_3, fg = self.text_color)
+
+        max_square_footage_sec.frame.configure(bg = self.layer_2)
+        max_square_footage_sec.label.configure(bg = self.layer_2, fg = self.text_color)
+        max_square_footage_sec.entry.configure(bg = self.layer_1)
+        max_square_footage_sec.label_2.configure(bg = self.layer_2)
+        max_square_footage_sec.clear_btn.configure(bg = self.layer_3, fg = self.text_color)
+
+        calculate_sec.frame.configure(bg = self.layer_3)
+        calculate_sec.cal_button.configure(bg = self.layer_2, fg = self.text_color)
+        calculate_sec.clear_all_btn.configure(bg = self.layer_3, fg = self.text_color)
+
+        result_sec.frame.configure(bg = self.layer_2)
+        result_sec.info_label.configure(bg = self.layer_2, fg = self.text_color)
+        result_sec.return_label.configure(bg = self.layer_2, fg = self.text_color)
+        result_sec.copy_button.configure(bg = self.layer_2, fg = self.text_color)
+
+
+
             
 
                  
@@ -74,7 +114,7 @@ class ToolBar:
 
         self.theme_button = Button(self.button_frame, text = 'Theme', bg = theme.layer_2,
             fg = theme.text_color, width = 8, relief = 'ridge', font = ('Ariel', 10), bd = 1,
-            overrelief = 'sunken', takefocus = 0, command = self.switch )
+            overrelief = 'sunken', takefocus = 0, command = theme.switch )
 
         self.basic_button = Button(self.button_frame, text = 'Basic', bg = theme.layer_2,
             fg = theme.text_color, width = 8, relief = 'ridge', font = ('Ariel', 10), bd = 1,
@@ -84,11 +124,13 @@ class ToolBar:
             fg = theme.text_color, width = 8, relief = 'ridge', font = ('Ariel', 10), bd = 1,
             overrelief = 'sunken', takefocus = 0, command = self.advanced_btn)
 
-    def show(self):
-        self.button_frame.grid(row = 0, column = 0, padx = 5, sticky = 'ne')
+
+    def show(self, num = 1):
+        self.button_frame.grid(row = num, column = 0, padx = 5, sticky = 'ne')
         self.theme_button.grid(row = 0, column = 0, padx = 0, pady = 5)
         self.advanced_button.grid(row = 0, column = 1, padx = 0, pady = 5)
     
+
     def basic_btn(self):
         root.geometry('630x410')
         self.basic_button.grid_forget()
@@ -100,20 +142,20 @@ class ToolBar:
 
         calculate_sec.calculate()
 
+
     def switch(self):
         print('Hit')
         theme.switch()    
 
 
     def advanced_btn(self):
-        root.geometry('630x530')
+        root.geometry('630x610')
         self.advanced_button.grid_forget()
         self.basic_button.grid(row = 0, column = 1, padx = 0, pady = 5)
         
-        max_height_sec.show(3)
-        max_width_sec.show(4)
-        max_square_footage_sec.show(5)
-        #scale_sec.show(6)
+        max_height_sec.show(4)
+        max_width_sec.show(5)
+        max_square_footage_sec.show(6)
 
         #all other advanced options .grid() go here.
 
@@ -126,16 +168,14 @@ class Header:
     def __init__(self):
         self.frame = Frame(sub_window, bg = theme.layer_3, width = 600)
 
-        self.title_label = Label(self.frame, text = 'Proportional Calculator', font = ('Ariel', 27),
-            bg = theme.layer_3, fg = theme.text_color, width = 27)
+        self.title_label = Label(self.frame, text = 'Proportional Calculator',
+            font = ('Ariel', 27), bg = theme.layer_3, fg = theme.text_color,
+            width = 27)
 
-    def show(self):
-        self.frame.grid(row = 1, column = 0, pady = 5, padx = 5)
+    def show(self, num = 1):
+        self.frame.grid(row = num, column = 0, pady = 5, padx = 5)
         self.title_label.grid(row = 0, column = 0, padx = 5, pady = 4)
         
-
-    
-
 
 
 class EntryField:
@@ -211,7 +251,8 @@ class SquareFootage:
             width = 10, relief = 'flat', font = ('Ariel', 15), validate = 'key',
             validatecommand = (validation, '%P'))
 
-        self.label_2 = Label(self.frame, bg = theme.layer_2, fg = theme.text_color, width = 17)
+        self.label_2 = Label(self.frame, bg = theme.layer_2, fg = theme.text_color,
+            width = 17)
 
         self.clear_btn = Button(self.frame, text = 'Clear', bg = theme.layer_3,
             fg = theme.text_color, width = 5, relief = 'ridge', font = ('Ariel', 10),
@@ -230,77 +271,6 @@ class SquareFootage:
         self.entry.delete(0, END)
 
 
-# class ScaleSection:
-#     '''
-#     Scale data section.
-#     '''
-#     def __init__(self):
-#         self.frame = Frame(sub_window, bg = 'red', width = 600,
-#             height = 80)
-
-#         self.label = Label(self.frame, bg = 'white', fg = theme.text_color,
-#             width = 5, font = ('Ariel', 15), text = 'Scale 2 Scale',)
-        
-#         self.radio_frame = Frame(self.frame, bg = theme.layer_2, width = 2,
-#             height = 40)
-
-#         self.radio_var = IntVar()
-#         self.radio_var.set(0)
-
-#         self.radio1 = Radiobutton(self.radio_frame, text = '1/20',
-#             variable = self.radio_var, value = 1, width = 4,
-#             font = ('Ariel', 12), indicatoron = 0, relief = 'groove', bd = 1,
-#             selectcolor = theme.layer_2, overrelief = 'sunken', takefocus = 0,
-#             bg = theme.layer_2, fg = theme.text_color)
-
-#         self.radio2 = Radiobutton(self.radio_frame, text = '1/10',
-#             variable = self.radio_var, value = 2, width = 4,
-#             font = ('Ariel', 12), indicatoron = 0, relief = 'groove', bd = 1,
-#             selectcolor = theme.layer_2, overrelief = 'sunken', takefocus = 0,
-#             bg = theme.layer_2, fg = theme.text_color)
-
-#         self.radio3 = Radiobutton(self.radio_frame, text = '1/8',
-#             variable = self.radio_var, value = 3, width = 4,
-#             font = ('Ariel', 12), indicatoron = 0, relief = 'groove', bd = 1,
-#             selectcolor = theme.layer_2, overrelief = 'sunken', takefocus = 0,
-#             bg = theme.layer_2, fg = theme.text_color)
-
-#         self.radio4 = Radiobutton(self.radio_frame, text = '1/4',
-#             variable = self.radio_var, value = 4, width = 4,
-#             font = ('Ariel', 12), indicatoron = 0, relief = 'groove', bd = 1,
-#             selectcolor = theme.layer_2, overrelief = 'sunken', takefocus = 0,
-#             bg = theme.layer_2, fg = theme.text_color)
-
-#         self.radio5 = Radiobutton(self.radio_frame, text = '1/2',
-#             variable = self.radio_var, value = 5, width = 4,
-#             font = ('Ariel', 12), indicatoron = 0, relief = 'groove', bd = 1,
-#             selectcolor = theme.layer_2, overrelief = 'sunken', takefocus = 0,
-#             bg = theme.layer_2, fg = theme.text_color)
-
-#         self.radio6 = Radiobutton(self.radio_frame, text = 'FULL',
-#             variable = self.radio_var, value = 6, width = 4,
-#             font = ('Ariel', 12), indicatoron = 0, relief = 'groove', bd = 1,
-#             selectcolor = theme.layer_2, overrelief = 'sunken', takefocus = 0,
-#             bg = theme.layer_2, fg = theme.text_color)
-
-
-#     def show(self, num = 1):
-
-#         self.frame.grid(row = num, column = 0)
-#         self.frame.grid_propagate(0)
-#         self.label.grid(row = 0, column = 0)
-        
-#         self.radio_frame.grid(row = 1, column = 0)
-#         self.radio1.grid(row = 1, column = 0 )
-#         self.radio2.grid(row = 1, column = 1 )
-#         self.radio3.grid(row = 1, column = 2 )
-#         self.radio4.grid(row = 1, column = 3 ) 
-#         self.radio5.grid(row = 1, column = 4 )
-#         self.radio6.grid(row = 1, column = 5 )
-
-
-
-
 
 class CalculateSection:
     '''
@@ -313,8 +283,8 @@ class CalculateSection:
             fg = theme.text_color, width = 23, relief = 'ridge', font = ('Ariel', 15), bd = 1,
             overrelief = 'sunken', command = self.calculate, takefocus = 0)
 
-        self.cal_radio_var = IntVar()
-        self.cal_radio_var.set(1)
+        # self.cal_radio_var = IntVar()
+        # self.cal_radio_var.set(1)
 
         self.clear_all_btn = Button(self.frame, text = 'Clear All', bg = theme.layer_3,
             fg = theme.text_color, width = 8, relief = 'ridge', font = ('Ariel', 10),
@@ -340,7 +310,9 @@ class CalculateSection:
     def clear_all(self):
         for field in data_entries:
             field.entry.delete(0, END)
-            result_sec.return_label['text'] = '0\n0\n0'    
+            result_sec.return_label['text'] = '0.0" | 0.0\'\n0.0" | 0.0\'\n0.0\''   
+
+
 
 class ResultSection:
     '''
@@ -360,7 +332,7 @@ class ResultSection:
             fg = theme.text_color, width = 20, height = 3, font = ('Ariel', 15))
         
         self.return_label.configure(justify = 'left', anchor = 'w',
-            text = '0 \n0 \n0 ' )
+            text = '0.0" | 0.0\'\n0.0" | 0.0\'\n0.0\'' )
 
         self.copy_button = Button(self.frame, text = 'Copy', bg = theme.layer_2,
             fg = theme.text_color, width = 10, relief = 'ridge', font = ('Ariel', 10), bd = 1,
@@ -462,14 +434,13 @@ if __name__ == '__main__':
 
     #toolbar section.
     toolbar = ToolBar()
-    toolbar.show()
+    toolbar.show(0)
 
     #creates header section.
     header = Header()
-    header.show()
+    header.show(1)
 
     #creates data entry fields
-    
     data_entries = []
 
     current_height_sec = EntryField('Current Height:')
@@ -489,17 +460,14 @@ if __name__ == '__main__':
     max_square_footage_sec = SquareFootage('Max Sqaure Footage:')
     data_entries.append(max_square_footage_sec)
 
-    #scale_sec = ScaleSection()
-    #data_entries.append(scale_sec)
-
     #creates the calculation button section.
     calculate_sec = CalculateSection()
-    calculate_sec.show(8)
+    calculate_sec.show(7)
 
     #create class for the return results section.
     updated_result = ['']
     result_sec = ResultSection()
-    result_sec.show(9)
+    result_sec.show(8)
 
     root.bind('<Return>', calculate_sec.calculate)
     tab_order()
