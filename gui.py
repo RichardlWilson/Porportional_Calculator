@@ -277,6 +277,8 @@ class CalculateSection:
     Calculate Button Section.
     '''
     def __init__(self):
+        self.updated_result = '0.0" | 0.0\'\n0.0" | 0.0\'\n0.0\''
+
         self.frame = Frame(sub_window, bg = theme.layer_3, width = 600)
 
         self.cal_button = Button(self.frame, text = 'CALCULATE', bg = theme.layer_2,
@@ -303,9 +305,9 @@ class CalculateSection:
         info.append([data_entries[4].entry.get(), 1])    
              
         calculation = cal.calculate(info)
-        updated_result[0] = calculation
+        self.updated_result = calculation
 
-        result_sec.return_label['text'] = updated_result[0]    
+        result_sec.return_label['text'] = self.updated_result  
 
     def clear_all(self):
         for field in data_entries:
@@ -336,7 +338,7 @@ class ResultSection:
 
         self.copy_button = Button(self.frame, text = 'Copy', bg = theme.layer_2,
             fg = theme.text_color, width = 10, relief = 'ridge', font = ('Ariel', 10), bd = 1,
-            command = lambda : self.copy_to_clipboard('text'), overrelief = 'sunken',
+            command = lambda : self.copy_to_clipboard(), overrelief = 'sunken',
             takefocus = 0)
         
 
@@ -347,18 +349,16 @@ class ResultSection:
         self.copy_button.grid(row = 0, column = 2, padx = 5, pady = 5, sticky = 'ne')
 
 
-    def copy_to_clipboard(self, text):
+    def copy_to_clipboard(self):
         root.clipboard_clear()
-
+        
+        # root.clipboard_append(calculate_sec.updated_result)
         try:
-            text = updated_calculation[0].split('\n')
+            text = calculate_sec.updated_result.split('\n')
             root.clipboard_append(f'Height: {text[0]} \nWidth: {text[1]} \nSquare' \
                 + f'Footage: {text[2]}')
         except IndexError:
-            text = [0,0,0]
-
-            root.clipboard_append(f'Height: {text[0]} \nWidth: {text[1]} \nSquare' \
-                + f'Footage: {text[2]}')
+            root.clipboard_append('Error Copying')
 
         root.update() 
 
