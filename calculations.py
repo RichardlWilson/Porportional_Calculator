@@ -1,164 +1,186 @@
 
-    
+def convert_to_inches(nested_list):
+        '''
+        Converts all passed arguments to inches.
+        Expects a nested list: [[float, bool]]*5 
+        Returns a list: [float]*5
+        '''
+        check_empty = lambda entry: 0.0 if entry == '' else float(entry)
 
-class Calculation:
+        converted_data = []
+
+        for data in nested_list:
+
+            if data[1]:
+                converted_data.append(check_empty(data[0]) * 12)
+            else:
+                converted_data.append(check_empty(data[0]))
+
+        return converted_data       
+
+
+def add(current_height, current_width, height_scale, width_scale):
+        '''
+        Add to current Height & Width
+        '''
+        current_height += height_scale
+        current_width += width_scale
+
+        return current_height, current_width   
+
+
+def subtract(current_height, current_width, height_scale, width_scale):
     '''
-    Calculates the max height and max width from a pre determined measurment and 
-    a maximum square footage.
-
-    info is expected to be a list of list.
-
-    str_info = [[str(value), int(0 or 1)],[str(value), int(0 or 1)],
-                [str(value), int(0 or 1)],[str(value), int(0 or 1)],
-                [str(value), int(0 or 1)]]
+    Subtract from current Height & Width.
     '''
+    current_height -= height_scale
+    current_width -= width_scale
 
-    def __init__(self, str_info):
-
-        class Entry:
-            def __init__(self, number, bool_value):
-                self.number = number
-                self.bool_value = bool_value
-                self.scale_increase = 0
-
-            def __str__(self):
-                return str(self.number)
-
-            def __float__(self):
-                return self.number
-
-            def __bool__(self):
-                return self.bool_value
-   
-
-        check_empty = lambda entry: 0 if entry == '' else float(entry)
-
-        self. current_height =  Entry(check_empty(str_info[0][0]),
-            bool(str_info[0][1]))
-
-        self.current_width = Entry(check_empty(str_info[1][0]),
-            bool(str_info[1][1]))
-
-        self.max_height = Entry(check_empty(str_info[2][0]),
-            bool(str_info[2][1]))
-
-        self.max_width = Entry(check_empty(str_info[3][0]),
-            bool(str_info[3][1]))
-
-        self.max_sqft = Entry(check_empty(str_info[4][0]), True)
-
-        self.entry_list = [self.current_height, self.current_width,
-            self.max_height, self.max_width, self.max_sqft]
+    return current_height, current_width
 
 
-    def convert_to_inches(self):
-        '''
-        Converts all passed arguments to inches. 
-        '''
-        #return converted_entries
-
-        for entry in self.entry_list:
-            if entry.bool_value:
-                entry.number *= 12
-                    
-        return [num.number for num in self.entry_list]
-
-
-    def check_zeros(self):
-        '''
-        Checks is max_height, max_width or max_sqft equal zero. If so, then
-        change them to an un reachable limit.
-        '''
-        if self.current_width.number == 0 or self.current_height.number == 0:
-            return True
-
-        # if (self.max_height == 0) and (self.max_width == 0) and
-        #   (self.max_sqft == 0):
-        #     print('all max zeros Now', self.max_height, self.max_width,
-        #    self.max_sqft)
-        #     return True
-
-        if not self.max_height.number:
-            self.max_height.number = 2000000
-
-        if not self.max_width.number:
-            self.max_width.number = 2000000
-
-        if not self.max_sqft.number:
-            self.max_sqft.number = 2000000
-
-        return False
-
-
-    def scale_ratio(self):
-        '''
-        Get ratio between current_height and current_width.
-        '''
-        if self.current_height.number > self.current_width.number:
-            self.current_height.scale_increase = 1
-            self.current_width.scale_increase = self.current_width.number\
-             / self.current_height.number
+def scale(current_height, current_width):
+    '''
+    calculates the ratio of current height to current width.
+    '''
+    try:
+        if current_height >= current_width:
+            height_scale = current_width / current_height
+            width_scale = 1.0
         else:
-            self.current_height.scale_increase = self.current_height.number \
-            / self.current_width.number
-            self.current_width.scale_increase = 1
+            width_scale = current_height / current_width
+            height_scale = 1.0
 
-        return self.current_height.scale_increase, self.current_width.scale_increase
+        return height_scale, width_scale
 
-
-    def cal_entries(self):
-
-        if self.max_height.number == 2000000 and self.max_width.number == 2000000 \
-            and self.max_sqft.number == 2000000:
-
-            return f'{round(self.current_height.number, 2)}" | '\
-                + f'{round(self.current_height.number / 12, 2)}\'\n' \
-                + f'{round(self.current_width.number, 2)}" | '\
-                + f'{round(self.current_width.number / 12, 2)}\'\n' \
-                + f'{round(self.current_height.number * self.current_width.number / 144 , 2)}\''
-        
-        while ((self.current_height.number * self.current_width.number / 144 >= self.max_sqft.number / 12) \
-            and (self.current_height.number >= self.max_height.number)\
-            and (self.current_width.number >= self.max_width.number)):
-        
-            print('too low')
-
-            self.current_height.number -= self.current_height.scale_increase
-            self.current_width.number -= self.current_width.scale_increase
-
-        while (((self.current_height.number + self.current_height.scale_increase) \
-            * (self.current_width.number + self.current_width.scale_increase) \
-             / 144 <= self.max_sqft.number / 12) \
-            and (self.current_height.number + self.current_height.scale_increase \
-                <= self.max_height.number) \
-            and (self.current_width.number + self.current_width.scale_increase \
-                <= self.max_width.number)):
-
-            self.current_height.number += self.current_height.scale_increase
-            self.current_width.number += self.current_width.scale_increase
-
-            print(self.current_height, self.current_width,
-                self.current_height.scale_increase,
-                self.current_width.scale_increase,
-                self.max_sqft)
-
-        safe_sqft = (self.current_height.number * self.current_width.number / 144)
-
-        return f'{round(self.current_height.number, 2)}" | '\
-            + f'{round(self.current_height.number / 12, 2)}\'\n' \
-            + f'{round(self.current_width.number, 2)}" | '\
-            + f'{round(self.current_width.number / 12, 2)}\'\n' \
-            + f'{round(safe_sqft, 2)}\''
+    except ZeroDivisionError:
+        return 0, 0      
 
 
-    def compute(self):
-        self.convert_to_inches()
-        zeros = self.check_zeros()
+def square_footage(current_height, current_width):
+    '''
+    calculates square footage of current height and width.
+    '''
+    return current_height * current_width /144 
 
-        if zeros:
-            return 'Error:\nCurrent Height Empty or\nCurrent Width Empty'
-        else:    
-            self.scale_ratio()
 
-            return self.cal_entries()          
+def up_to_max_square_footage(current_height, current_width, height_scale,
+    width_scale, max_sqft):
+    '''
+    Calculates up to max square footage.
+    '''
+    if max_sqft == 0:
+        return current_height, current_width, square_footage(current_height,
+            current_width)
 
+    while ((square_footage(current_height, current_width) >= max_sqft)):
+
+        current_height, current_width = subtract(current_height, current_width,
+            height_scale, width_scale)
+
+    while ((square_footage(current_height + height_scale,
+        current_width + width_scale) <= max_sqft)):
+
+        current_height, current_width = add(current_height, current_width,
+            height_scale, width_scale)
+
+    return round(current_height, 2), round(current_width, 2), \
+    round(square_footage(current_height, current_width), 2)
+
+
+def up_to_max_height(current_height, current_width, height_scale, width_scale,
+    max_height, max_width, max_sqft):
+    '''
+    calculates up to max height but not higher than max square footage unless
+    max square footage == 0.
+    '''
+    if max_height == 0:
+        return current_height, current_width, \
+        square_footage(current_height, current_width)
+
+    while ((current_height >= max_height)):
+        current_height, current_width, = subtract(current_height, current_width,
+            height_scale, width_scale)
+
+    while ((max_sqft == 0) and (current_height < max_height)):
+        current_height, current_width = add(current_height, current_width,
+            height_scale, width_scale)    
+
+    return current_height, current_width, \
+    square_footage(current_height,current_width)
+
+
+def up_to_max_width(current_height, current_width, height_scale, width_scale,
+    max_height, max_width, max_sqft):
+    '''
+    calculates up to max width but not higher than max height or max square
+    footage unless both max height and max square footage == 0.
+    '''
+    if max_width == 0:
+        return current_height, current_width, \
+        square_footage(current_height, current_width)
+
+    while ((current_width >= max_width)):
+        current_height, current_width, = subtract(current_height, current_width,
+            height_scale, width_scale)
+
+    while ((max_sqft == 0) and (current_width + width_scale <= max_width) \
+        and ((current_height + height_scale <= max_height) or (max_height == 0))):
+        current_height, current_width = add(current_height, current_width,
+            height_scale, width_scale)    
+
+    return current_height, current_width, \
+    square_footage(current_height, current_width) 
+
+
+def get_format(height, width, square_footage):
+    '''
+    formats arguments passed in.
+    '''
+    return f'{height}" | {round(height/12, 2)}\'\n' \
+        + f'{width}" | {round(width/12, 2)}\'\n' \
+        + f'{square_footage}\''
+
+
+def calculate(data):
+    '''
+    Main calculation function.
+    expecting list of 5 Float Values. LIST = [Current Height, Current Width,
+    Max Height, Max Width, Max Square Footage]
+    '''
+    data = convert_to_inches(data)
+    
+    current_height = data[0]
+    current_width = data[1]
+    max_height = data[2]
+    max_width = data[3]
+    max_sqft = data[4] / 12
+    current_sqft = square_footage(current_height, current_width)
+
+    if (current_height == 0) and  (current_width != 0):
+        return get_format(0.0, current_width, 0.0)
+
+    elif (current_height != 0) and (current_width == 0):
+        return get_format(current_height,0.0,0.0)
+    
+    height_scale, width_scale = scale(current_height, current_width)
+    current_height, current_width, current_sqft = \
+        up_to_max_square_footage(current_height, current_width, height_scale,
+            width_scale, max_sqft)
+    
+    current_height, current_width, current_sqft = \
+        up_to_max_height(current_height, current_width, height_scale,
+            width_scale, max_height, max_width, max_sqft)
+    
+    current_height, current_width, current_sqft = \
+        up_to_max_width(current_height, current_width, height_scale,
+            width_scale,max_height, max_width, max_sqft)
+
+    return get_format(round(current_height, 2), round(current_width, 2), \
+    round(current_sqft, 2))
+
+               
+
+if __name__ == '__main__':
+    test_data = ([[5, False],[5, False],[0, False],[12, True]]) + [[0, True]]
+    print(calculate(test_data))

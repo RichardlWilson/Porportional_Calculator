@@ -4,13 +4,14 @@ from tkinter import *
 import sys
 import os
 
-import calculations
+import calculations as cal
 
 class Themes:
     '''
     Atribbutes that change the appearance of the app.
     '''
     def __init__(self):
+        self.theme_num = 1
         self.text_color = '#FA9605'
         self.entry_text_color = 'white'
         self.layer_1 = '#5f7587'
@@ -43,7 +44,78 @@ class Themes:
         self.entry_text_color = 'white'
         self.layer_1 = '#34d1c9'
         self.layer_2 = '#97f7f2'
-        self.layer_3 = '#d7fcfa'     
+        self.layer_3 = '#d7fcfa'
+
+    def switch(self):
+        self.theme_num += 1
+
+        if self.theme_num >4:
+            self.theme_num = 1
+
+        elif self.theme_num == 1:
+            self.default()
+        elif self.theme_num == 2:
+            self.aqua()
+        elif self.theme_num == 3:
+            self.lava()
+        elif self.theme_num == 4:
+            self.wind()          
+            
+
+                 
+
+class ToolBar:
+    '''
+    Top tool bar.
+    '''
+    def __init__(self):
+
+        self.button_frame = Frame(sub_window, bg = theme.layer_3, width = 20)
+
+        self.theme_button = Button(self.button_frame, text = 'Theme', bg = theme.layer_2,
+            fg = theme.text_color, width = 8, relief = 'ridge', font = ('Ariel', 10), bd = 1,
+            overrelief = 'sunken', takefocus = 0, command = self.switch )
+
+        self.basic_button = Button(self.button_frame, text = 'Basic', bg = theme.layer_2,
+            fg = theme.text_color, width = 8, relief = 'ridge', font = ('Ariel', 10), bd = 1,
+            overrelief = 'sunken', takefocus = 0, command = self.basic_btn)
+
+        self.advanced_button = Button(self.button_frame, text = 'Advanced', bg = theme.layer_2,
+            fg = theme.text_color, width = 8, relief = 'ridge', font = ('Ariel', 10), bd = 1,
+            overrelief = 'sunken', takefocus = 0, command = self.advanced_btn)
+
+    def show(self):
+        self.button_frame.grid(row = 0, column = 0, padx = 5, sticky = 'ne')
+        self.theme_button.grid(row = 0, column = 0, padx = 0, pady = 5)
+        self.advanced_button.grid(row = 0, column = 1, padx = 0, pady = 5)
+    
+    def basic_btn(self):
+        root.geometry('630x410')
+        self.basic_button.grid_forget()
+        self.advanced_button.grid(row = 0, column = 1, padx = 0, pady = 5)
+        
+        for field in data_entries[2:]:
+            field.entry.delete(0,END)
+            field.frame.grid_forget()
+
+        calculate_sec.calculate()
+
+    def switch(self):
+        print('Hit')
+        theme.switch()    
+
+
+    def advanced_btn(self):
+        root.geometry('630x530')
+        self.advanced_button.grid_forget()
+        self.basic_button.grid(row = 0, column = 1, padx = 0, pady = 5)
+        
+        max_height_sec.show(3)
+        max_width_sec.show(4)
+        max_square_footage_sec.show(5)
+        #scale_sec.show(6)
+
+        #all other advanced options .grid() go here.
 
 
 
@@ -57,43 +129,12 @@ class Header:
         self.title_label = Label(self.frame, text = 'Proportional Calculator', font = ('Ariel', 27),
             bg = theme.layer_3, fg = theme.text_color, width = 27)
 
-        self.basic_button = Button(self.frame, text = 'Basic', bg = theme.layer_2,
-            fg = theme.text_color, width = 8, relief = 'ridge', font = ('Ariel', 10), bd = 1,
-            overrelief = 'sunken', takefocus = 0, command = self.basic_btn)
-
-        self.advanced_button = Button(self.frame, text = 'Advanced', bg = theme.layer_2,
-            fg = theme.text_color, width = 8, relief = 'ridge', font = ('Ariel', 10), bd = 1,
-            overrelief = 'sunken', takefocus = 0, command = self.advanced_btn)
-
-
     def show(self):
-        self.frame.grid(row = 0, column = 0, pady = 5, padx = 5)
+        self.frame.grid(row = 1, column = 0, pady = 5, padx = 5)
         self.title_label.grid(row = 0, column = 0, padx = 5, pady = 4)
-        self.advanced_button.grid(row = 0, column = 0, padx = 5, pady = 5, sticky = 'ne')
-
-    def basic_btn(self):
-        root.geometry('630x380')
-        self.basic_button.grid_forget()
-        self.advanced_button.grid(row = 0, column = 0, padx = 5, pady = 5, sticky = 'ne')
         
-        for field in data_entries[2:]:
-            field.entry.delete(0,END)
-            field.frame.grid_forget()
 
-        calculate_sec.calculate()
-
-
-    def advanced_btn(self):
-        root.geometry('630x580')
-        self.advanced_button.grid_forget()
-        self.basic_button.grid(row = 0, column = 0, padx = 5, pady = 5, sticky = 'ne')
-        
-        max_height_sec.show(3)
-        max_width_sec.show(4)
-        max_square_footage_sec.show(5)
-        #scale_sec.show(6)
-
-        #all other advanced options .grid() go here.
+    
 
 
 
@@ -291,8 +332,8 @@ class CalculateSection:
 
         info.append([data_entries[4].entry.get(), 1])    
              
-        calculation = calculations.Calculation(info)
-        updated_result[0] = calculation.compute()
+        calculation = cal.calculate(info)
+        updated_result[0] = calculation
 
         result_sec.return_label['text'] = updated_result[0]    
 
@@ -409,7 +450,7 @@ if __name__ == '__main__':
     root.configure(bg = theme.layer_3)
     root.columnconfigure(0, weight = 1)
     root.rowconfigure(0, weight = 1)
-    root.geometry(win_center(630, 380))#'630x380'
+    root.geometry(win_center(630, 410))#'630x380'
 
     file_path = get_path()
 
@@ -419,8 +460,9 @@ if __name__ == '__main__':
         relief = 'solid', bd = 1)
     sub_window.grid(row = 0, column = 0, padx = 10, pady = 10)
 
-    #create a tool bar to go at top of window. house advanced, basic and
-    #theme buttons.
+    #toolbar section.
+    toolbar = ToolBar()
+    toolbar.show()
 
     #creates header section.
     header = Header()
@@ -431,11 +473,11 @@ if __name__ == '__main__':
     data_entries = []
 
     current_height_sec = EntryField('Current Height:')
-    current_height_sec.show(1)
+    current_height_sec.show(2)
     data_entries.append(current_height_sec)
 
     current_width_sec = EntryField('Current Width:')
-    current_width_sec.show(2)
+    current_width_sec.show(3)
     data_entries.append(current_width_sec)
 
     max_height_sec = EntryField('Max Height:')
@@ -452,12 +494,12 @@ if __name__ == '__main__':
 
     #creates the calculation button section.
     calculate_sec = CalculateSection()
-    calculate_sec.show(7)
+    calculate_sec.show(8)
 
     #create class for the return results section.
     updated_result = ['']
     result_sec = ResultSection()
-    result_sec.show(8)
+    result_sec.show(9)
 
     root.bind('<Return>', calculate_sec.calculate)
     tab_order()
