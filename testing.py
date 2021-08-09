@@ -6,40 +6,73 @@ import calculations as cal
 
 class Test_Cal(unittest.TestCase):
 
-    def test_feet_to_inches(self):
-    	info = [[12,1],[12,1],[12,1],[12,1],[12,1]]
-    	calculation = cal.Calculation(info)
+    def setUp(self):
+        self.str_info = [['12',0],['12',0],['12',0],['12',0],['12',0]]
+        self.info_feet = [[12,1],[12,1],[12,1],[12,1],[12,1]]
+        self.info_inch = [[12,0],[12,0],[12,0],[12,0],[12,0]] 
 
-    	result = calculation.convert_to_inches()
+        self.current_height = 12.0
+        self.current_width = 10.0
+        self.height_scale = 1.0
+        self.width_scale = 0.83
+        self.max_sqft = 2
+
+    def test_convert_to_inches(self):
+
+    	result = cal.convert_to_inches(self.info_feet)
+
     	self.assertEqual(result, [12*12 for num in range(5)])
-    	print('Inches to Feet: PASSED')
+    	print('PASSED, convert_to_inches()')
 
 
-    def test_inches_to_inches(self):
-    	info = [[12,0],[12,0],[12,0],[12,0],[12,1]]
-    	calculation = cal.Calculation(info)
+    def test_add(self):
+        result = cal.add(self.current_height, self.current_width, self.height_scale,
+            self.width_scale)
 
-    	result = calculation.convert_to_inches()
-    	self.assertEqual(result, [12 for num in range(4)] + [12*12])
-    	print('Inches to Inches: PASSED')
+        self.assertEqual(result,(13.0 ,10.83))
 
-
-    def test_for_zeros(self):
-    	info = [[12,0],[12,0],[12,0],[12,0],[12,1]]
-    	calculation = cal.Calculation(info)
-
-    	result = calculation.check_zeros()
-    	self.assertEqual(result, False)
-    	print('Check for Zeros: OK')
+        print('PASSED, add()')
 
 
-    def test_scale_percentages(self):
-    	info = [[12,0],[24,0],[12,0],[12,0],[12,1]]
-    	calculation = cal.Calculation(info)
+    def test_subtract(self):
+        result = cal.subtract(self.current_height, self.current_width, self.height_scale,
+            self.width_scale)
 
-    	result = calculation.scale_ratio()
-    	self.assertEqual(result, (0.5,1))
-    	print('Scale Percentages: PASSED')
+        self.assertEqual(result,(11.0 ,9.17))
+
+        print('PASSED, subtract()')
+
+
+    def scale(self):
+        pass
+        result = cal.scale(self.current_height, self.current_width)
+
+
+    def square_footage(current_height, current_width):
+        pass
+
+
+    def up_to_max_square_footage(current_height, current_width,
+        height_scale, width_scale, max_sqft):
+        pass
+
+
+    def up_to_max_height(current_height, current_width, height_scale, width_scale,
+        max_height, max_width, max_sqft):
+        pass
+
+
+    def up_to_max_width(current_height, current_width, height_scale, width_scale,
+        max_height, max_width, max_sqft):
+        pass
+
+
+    def get_format(height, width, square_footage):
+        pass
+
+
+    def calculate(info):
+        pass
 
 
 if __name__ == '__main__':
