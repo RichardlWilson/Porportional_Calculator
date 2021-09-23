@@ -103,7 +103,7 @@ def up_to_max_height(current_height, current_width, height_scale, width_scale,
         current_height, current_width, = subtract(current_height, current_width,
             height_scale, width_scale)
 
-    while ((max_sqft == 0) and (current_height + height_scale < max_height)):
+    while ((max_sqft == 0) and (current_height + height_scale <= max_height)):
 
         current_height, current_width = add(current_height, current_width,
             height_scale, width_scale)         
