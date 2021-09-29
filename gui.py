@@ -1,5 +1,5 @@
 #GUI 
-version = ' v1.1.0'
+version = ' v1.2.1'
 from tkinter import *
 import sys
 import os
@@ -184,7 +184,7 @@ class EntryField:
     '''
     def __init__(self, name):   
 
-        self.frame = Frame(sub_window, bg = theme.layer_2, width = 600,
+        self.frame = Frame(sub_window, bg = theme.layer_2, width = 700,
             height = 40)
 
         self.label = Label(self.frame, bg = theme.layer_2, fg = theme.text_color,
@@ -371,9 +371,17 @@ def get_path():
     try:
        wd = sys._MEIPASS
     except AttributeError:
-       wd = os.getcwd()
+       wd = os.getcwd() 
 
-    return os.path.join(wd,'resources\\images\\icon.png')
+    win_path_divider = '\\'
+    linux_path_divider = '/'
+
+    if os.name == 'nt':
+        divder = win_path_divider
+    else:
+        divider = linux_path_divider      
+
+    return os.path.join(wd,f'resources{divider}images{divider}icon.png')
 
 
 def win_center(app_width, app_height):
@@ -422,7 +430,7 @@ if __name__ == '__main__':
     root.configure(bg = theme.layer_3)
     root.columnconfigure(0, weight = 1)
     root.rowconfigure(0, weight = 1)
-    root.geometry(win_center(630, 410))#'630x380'
+    root.geometry(win_center(740, 410))#'630x380'
 
     file_path = get_path()
 
