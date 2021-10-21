@@ -1,5 +1,5 @@
 #GUI 
-version = ' v1.1.0'
+version = ' v1.3.0'
 from tkinter import *
 import sys
 import os
@@ -373,7 +373,7 @@ def get_path():
     except AttributeError:
        wd = os.getcwd()
 
-    return os.path.join(wd,'resources\\images\\icon.png')
+    return os.path.join(wd,'resources/images/icon.png')
 
 
 def win_center(app_width, app_height):
